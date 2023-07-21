@@ -3,12 +3,22 @@
   padding: 0;
   box-sizing: border-box;
 }
+:root {
+  --bg-blue: #00324e;
+  --btn-blue: #3397cf;
+  --main-blue: #006aa6;
+  --main-lightblue: #3397cf;
+}
 html,
 body {
-  background-color: #00324e;
+  background-color: var(--bg-blue);
 }
 .App {
   height: auto;
+}
+button {
+  border: none;
+  cursor: pointer;
 }
 nav {
   position: fixed;
@@ -20,22 +30,18 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  background-color: #006aa6;
+  background-color: var(--main-blue);
 }
 nav > a {
   border-radius: 5px;
   text-decoration: none;
-  color: cornflowerblue;
-  background-color: aliceblue;
+  color: white;
+  background-color: var(--main-blue);
 }
 nav > button {
-  background-color: #2490bf;
+  padding: 5px;
+  background-color: var(--main-lightblue);
   color: white;
-  border: none;
-}
-.logo{
-  width: 30px;
-  height: 30px;
 }
 .header {
   position: sticky;
@@ -47,7 +53,7 @@ nav > button {
   border-radius: 12px 12px 0 0;
 }
 .search {
-  background-color: #00324e;
+  background-color: var(--bg-blue);
   color: white;
   border: none;
   width: 20rem;
@@ -79,14 +85,11 @@ nav > button {
 ul {
   width: 100%;
   padding: 0;
+  margin-bottom: 40px;
 }
 .task {
   display: flex;
   justify-content: center;
-}
-.task p,
-.task-created-time {
-  font-size: 14px;
 }
 .task h3 {
   margin: 0;
@@ -104,6 +107,17 @@ ul {
   justify-content: flex-start;
   align-items: center;
 }
+.task-created-time {
+  margin-left: 0.5rem;
+}
+.task p,
+.task-created-time {
+  font-size: 14px;
+}
+.task-title {
+  overflow: hidden;
+  text-overflow: ellipsis " [..]";
+}
 .task-filter {
   width: 80%;
   display: flex;
@@ -117,17 +131,13 @@ ul {
 }
 .task-filter-btn {
   color: rgba(128, 128, 128, 0.927);
-  border: none;
   background-color: transparent;
-  cursor: pointer;
 }
 .task-filter-btn:hover {
   color: rgba(128, 128, 128, 0.611);
 }
 .task-add-btn {
-  border: none;
   background-color: white;
-  cursor: pointer;
 }
 .modal-overlay {
   position: fixed;
@@ -164,9 +174,7 @@ ul {
   font-size: 16px;
   color: white;
   border-radius: 10px;
-  background-color: #3397cf;
-  border: none;
-  cursor: pointer;
+  background-color: var(--btn-blue);
 }
 .modal-btns .modal-close-btn {
   margin: 0;
@@ -205,15 +213,31 @@ ul {
 .task-form-body:focus {
   outline: none;
 }
-
-
+textarea:valid {
+    background-color: rgba(92, 193, 92, 0.555);
+}
+.task-form-submit {
+  position: relative;
+  width: 100%;
+  height: 2rem;
+  background-color: var(--btn-blue);
+  color: white;
+  outline: none;
+}
 .spinner {
   width: 50px;
   height: 50px;
   border: 3px solid transparent;
-  border-top-color: white;
+  border-top-color: var(--bg-blue);
   border-radius: 50%;
+  margin: 10px;
   animation: spinner infinite 0.7s;
+}
+.loadingBar {
+  position: absolute;
+  top: 10%;
+  left: 45%;
+  transform: translateY(-100%);
 }
 
 @keyframes spinner {

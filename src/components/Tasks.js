@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react"
 import { useOutletContext, useLocation } from "react-router-dom"
 import Modal from "./Modal"
-export default function Repos() {
+import TaskList from "./TaskList"
+import { toast } from 'https://cdn.skypack.dev/wc-toast';
+import fetchData from "../api/fetchData"
+export default function Tasks() {
     const {user, searchInput} = useOutletContext()
     const [page, setPage] = useState(1)
     const [issues, setIssues] = useState([])
@@ -9,60 +12,49 @@ export default function Repos() {
     const [isDesc, setIsDesc] = useState(true)
     const [modalOpen, setModalOpen] = useState(false)
     const [modalData, setModalData] = useState({})
+    const [hasMore, setHasMore] = useState(false)
     const obRef = useRef()
     const location = useLocation()
+    console.log("rendering", page, hasMore, issues)
     function handleOpenModal(event, item = {}) {
-        console.log(event, item)
         setModalData(item)
         setModalOpen(true)
     }
-    async function fetchData(repo, pageCount) {
-        console.log("page:", repo, pageCount, isDesc)
-        const res = await fetch("https://api.github.com/search/issues?q=" + repo + `&page=${pageCount}&per_page=10&order=${isDesc ? "desc" : "asc"}`, {
-            headers: {
-                Authorization: `Bearer ${user}`
-            }
-        })
-        if(!res.ok) { 
-            throw new Error("Error when fetching data!!")
-        }    
-        const res_json = await res.json()
-        console.log("data:", res_json)
-        const { total_count, items } = res_json
-        return { total_count, items }
-    }
     async function fetchIssues() {
-        const { total_count, items } = await fetchData(searchInput, 1)
+        const { total_count, items } = await fetchData(user, searchInput, 1, isDesc)
         setIssues(items)
-    }
-    async function fetchMore() {
-        console.log("More", issues, page)
-        const { total_count, items } = await fetchData(searchInput, page)
-        setIssues([...issues, ...items])
+        setHasMore(!(items.length < 10))
     }
     useEffect(() => {
+        setHasMore(true)
         setPage(1)
-        console.log("Load", page)
         fetchIssues()
     }, [location.pathname, isDesc])
     useEffect(() => {
-        page> 1 && fetchMore()
-    }, [page])
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-            if(entry.isIntersecting) {
+        console.log("Mount")
+        async function fetchMore() {
+            const { total_count, items } = await fetchData(user, searchInput, page + 1, isDesc)
+            setIssues([...issues, ...items])
+            if (items.length < 10) {
+                setHasMore(false)
+            }
+        }
+        const observer = new IntersectionObserver(entry => {
+            if(entry[0].isIntersecting) {
+                console.log("In", hasMore)
+                fetchMore()
                 setPage(prev => prev + 1)
             }
-            }, {root: null, rootMargin: '0px', threshold: 0})
-        })
-        observer.observe(obRef.current);
+        }, {root: null, rootMargin: '0px', threshold: 0})
+        console.log("ref", obRef.current)
+        obRef.current && observer.observe(obRef.current);
         return () => {
-            observer.disconnect()
+            if (observer) observer.disconnect()
         };
-    }, []);
+    }, [issues]);
     return (
         <>
+            <wc-toast></wc-toast>
             <div className="task-filter">
                 <div className="task-filter-block">
                     <select value={label} onChange={(event) => setLabel(event.target.value)}>
@@ -80,22 +72,11 @@ export default function Repos() {
                 </div>
             </div>
             <ul>
-                {
-                    issues?.map(issue => 
-                        <div className="task" key={issue.id}>
-                            <article onClick={(event) => handleOpenModal(event, issue)} className="task-article">
-                                <div className="task-header">
-                                    <p className="task-label">{issue.labels[0]?.name}</p>
-                                    <span className="task-created-time"><p>created at: {issue.created_at}</p></span>
-                                </div>
-                                <h3 className="task-title">{issue.title}</h3>
-                            </article>
-                        </div>
-                    )
-                }
+                <TaskList issues={issues} label={label} handleOpenModal={handleOpenModal} />
             </ul>
-            { modalOpen && <Modal modalData={modalData} setModalOpen={setModalOpen}/>}
-            { <div ref={obRef} className="spinner"></div> } 
+            { modalOpen && <Modal modalData={modalData} setModalOpen={setModalOpen} fetchIssues={fetchIssues}/>}
+            
+            { hasMore && <div ref={obRef} className="spinner"></div>}
         </> 
     )
 }

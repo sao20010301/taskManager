@@ -21,7 +21,6 @@ export default function NavBar() {
                 method: "GET",
                 credentials: "include"
             }).then((res) => {
-                console.log("response", Cookies.get("access_token"))
                 res.ok && Cookies.get("access_token") && setUser(Cookies.get("access_token"))
             }).catch((err) => {
                 console.log("error",err)
@@ -34,7 +33,7 @@ export default function NavBar() {
     return (
         <nav>
             <Link to="/">
-                <img src={Logo} alt="Home" className="logo"/>
+                <h3>Home</h3>
             </Link>
             { user 
                 ? <button onClick={logout}>登出</button>
