@@ -15,7 +15,6 @@ export default function Tasks() {
     const [hasMore, setHasMore] = useState(false)
     const obRef = useRef()
     const location = useLocation()
-    console.log("rendering", page, hasMore, issues)
     function handleOpenModal(event, item = {}) {
         setModalData(item)
         setModalOpen(true)
@@ -31,7 +30,6 @@ export default function Tasks() {
         fetchIssues()
     }, [location.pathname, isDesc])
     useEffect(() => {
-        console.log("Mount")
         async function fetchMore() {
             const { total_count, items } = await fetchData(user, searchInput, page + 1, isDesc)
             setIssues([...issues, ...items])
@@ -41,12 +39,10 @@ export default function Tasks() {
         }
         const observer = new IntersectionObserver(entry => {
             if(entry[0].isIntersecting) {
-                console.log("In", hasMore)
                 fetchMore()
                 setPage(prev => prev + 1)
             }
         }, {root: null, rootMargin: '0px', threshold: 0})
-        console.log("ref", obRef.current)
         obRef.current && observer.observe(obRef.current);
         return () => {
             if (observer) observer.disconnect()

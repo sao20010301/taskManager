@@ -1,9 +1,7 @@
 import { useState } from "react"
 import { UserLogin } from "../Contexts/LoginContext"
 import { Outlet } from "react-router-dom"
-import Search from "./Search"
-
-
+import Search from "../components/Search"
 
 export default function Main() {
     const { user } = UserLogin()

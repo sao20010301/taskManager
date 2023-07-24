@@ -1,7 +1,6 @@
 import React,{ useEffect } from "react"
 import { Link } from "react-router-dom"
 import Cookies from "js-cookie"
-import Logo from "../logo.svg"
 import { UserLogin } from "../Contexts/LoginContext"
 
 export default function NavBar() {
@@ -13,6 +12,7 @@ export default function NavBar() {
         window.location.assign(`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&scope=repo`)
     }
     function logout() {
+        Cookies.remove("access_token")
         setUser(undefined)
     }
     useEffect(() => {
@@ -27,9 +27,6 @@ export default function NavBar() {
             })
         }
     }, [auth_code]);
-    useEffect(() => {
-        console.log(Cookies.get("access_token"))
-    }, [user])
     return (
         <nav>
             <Link to="/">

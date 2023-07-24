@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import NavBar from './components/NavBar';
 import Tasks from './components/Tasks';
-import Home from "./components/Home"
+import Home from "./pages/Home"
 import { LoginContextProvider } from './Contexts/LoginContext';
 import ProtectedLayout from './components/ProtectedLayout';
 function App() {

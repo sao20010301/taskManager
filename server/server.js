@@ -34,10 +34,6 @@ app.get('/login', async function (req, res) {
     })
     res.send()
 })
-app.get('/logout', async function (req, res) {
-    console.log("logout")
-    res.clearCookie("access_token")
-})
 app.use(function(req, res, next) {
     res.status(404).send('Sorry cant find that!');
   });
