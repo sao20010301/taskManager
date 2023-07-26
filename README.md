@@ -1,6 +1,7 @@
 Task Manager
 ======
-This project 
+This project helps users to track and manager issues of the repo.
+
 Features
 ======
 - Seach USER/REPO to get the issues of the repo as tasks(the doc said default query only gets the open issues,but not working:monocle_face:)  
